@@ -19,15 +19,20 @@ async function membersSharingAConversationWith(userId) {
 // io ==> Server instance
 function attachSocketHandlers(io) {
   // socket ==> connection between a single client and the server
+  // Guests identify themselves with the userId they got from POST /api/guest.
   io.use(async (socket, next) => {
-    const { userId } = socket.handshake.auth || {};
-    if (!userId || !mongoose.isValidObjectId(userId))
-      return next(new Error("MISSING_USER_ID"));
-    const user = await User.findById(userId);
-    if (!user) return next(new Error("GUEST_NOT_FOUND"));
-    socket.data.userId = String(userId);
-    socket.data.nickname = user.nickname;
-    next();
+    try {
+      const { userId } = socket.handshake.auth || {};
+      if (!userId || !mongoose.isValidObjectId(userId))
+        return next(new Error("MISSING_USER_ID"));
+      const user = await User.findById(userId);
+      if (!user) return next(new Error("GUEST_NOT_FOUND"));
+      socket.data.userId = String(userId);
+      socket.data.nickname = user.nickname;
+      next();
+    } catch (err) {
+      next(err);
+    }
   });
   // client connected to the server
   io.on("connection", async (socket) => {
@@ -44,7 +49,7 @@ function attachSocketHandlers(io) {
       const peers = await membersSharingAConversationWith(userId);
       peers.forEach((peerId) =>
         io
-          .to(`user:${peerId}`) 
+          .to(`user:${peerId}`)
           .emit("presence:update", { userId, online: true }),
       );
     } // i am back mother fuckers
@@ -106,7 +111,6 @@ function attachSocketHandlers(io) {
           });
           if (!member) throw badRequest("NOT_A_MEMBER");
 
-         
           if (
             !member.lastReadMessageId ||
             String(member.lastReadMessageId) < String(messageId)
@@ -156,7 +160,6 @@ function attachSocketHandlers(io) {
       }
     });
   });
-
 
   function joinUserToConversationRoom(userId, conversationId) {
     io.in(`user:${userId}`).socketsJoin(`conversation:${conversationId}`);
