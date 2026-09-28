@@ -1,0 +1,19 @@
+{
+  "name": "guest-chat-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mongoose": "^8.24.4",
+    "multer": "^2.4.0",
+    "socket.io": "^4.7.5",
+    "zod": "^4.6.5"
+  }
+}
