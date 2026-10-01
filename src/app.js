@@ -10,9 +10,12 @@ const conversationsRoutes = require("./routes/conversations");
 function createApp() {
   const app = express();
 
-  const uploadsDir = path.join(process.cwd(), "uploads");
-  fs.mkdirSync(path.join(uploadsDir, "avatars"), { recursive: true });
-  app.use("/uploads", express.static(uploadsDir));
+  // const uploadsDir = path.join(process.cwd(), "uploads");
+  // fs.mkdirSync(path.join(uploadsDir, "avatars"), { recursive: true });
+  // app.use("/uploads", express.static(uploadsDir));
+
+  // app.use("/uploads", express.static(path.join(__dirname, "uploads"))); 
+  app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));// middleware
 
   app.use(cors({ origin: process.env.CLIENT_ORIGIN || "*" }));
   app.use(express.json());

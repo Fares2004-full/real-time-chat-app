@@ -1,4 +1,4 @@
-const appError = "../utils/appError.js";
+const appError = require("../utils/appError.js");
 const multer = require("multer");
 
 const uploadImage = () => {
@@ -16,7 +16,7 @@ const uploadImage = () => {
     if (file.mimetype.startsWith("image/")) {
       cb(null, true);
     } else {
-      cb(appError.create("File must be animage ", 400), false);
+      cb(appError.create("File must be an image ", 400), false);
     }
   };
   return multer({
